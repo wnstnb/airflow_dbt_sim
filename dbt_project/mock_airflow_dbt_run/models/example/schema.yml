@@ -1,0 +1,9 @@
+version: 2
+sources:
+  - name: raw
+    tables:
+      - name: users_raw
+
+models:
+  - name: clean_users
+    description: "Users with cleaned names, emails, and ages."

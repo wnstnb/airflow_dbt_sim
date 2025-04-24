@@ -4,3 +4,5 @@ dbt-core
 dbt-sqlite 
 apache-airflow 
 snowflake-connector-python
+astronomer-cosmos
+apache-airflow-providers-snowflake
