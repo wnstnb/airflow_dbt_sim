@@ -1,0 +1,6 @@
+faker 
+sqlalchemy 
+dbt-core 
+dbt-sqlite 
+apache-airflow 
+snowflake-connector-python
