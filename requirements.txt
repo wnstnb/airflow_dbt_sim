@@ -1,8 +1,6 @@
-faker 
-sqlalchemy 
-dbt-core 
-dbt-sqlite 
-apache-airflow 
-snowflake-connector-python
-astronomer-cosmos
-apache-airflow-providers-snowflake
+apache-airflow==3.0.0
+dbt-sqlite==1.9.1
+dbt-core==1.9.1
+pandas==2.1.4
+SQLAlchemy==1.4.54
+apache-airflow-providers-sqlite

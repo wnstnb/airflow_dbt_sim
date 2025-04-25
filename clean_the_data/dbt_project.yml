@@ -2,11 +2,11 @@
 # Name your project! Project names should contain only lowercase characters
 # and underscores. A good package name should reflect your organization's
 # name or the intended use of these models
-name: 'mock_airflow_dbt_run'
+name: 'clean_the_data'
 version: '1.0.0'
 
 # This setting configures which "profile" dbt uses for this project.
-profile: 'mock_airflow_dbt_run'
+profile: 'clean_the_data'
 
 # These configurations specify where dbt should look for different types of files.
 # The `model-paths` config, for example, states that models in this project can be
@@ -30,7 +30,7 @@ clean-targets:         # directories to be removed by `dbt clean`
 # directory as views. These settings can be overridden in the individual model
 # files using the `{{ config(...) }}` macro.
 models:
-  mock_airflow_dbt_run:
+  clean_the_data:
     # Config indicated by + and applies to all files under models/example/
     example:
       +materialized: view

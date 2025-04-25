@@ -1,78 +1,21 @@
-version: '3'
 services:
-  postgres:
-    image: postgres:13
-    environment:
-      - POSTGRES_USER=airflow
-      - POSTGRES_PASSWORD=airflow
-      - POSTGRES_DB=airflow
-    volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
-      interval: 5s
-      retries: 5
-
-  airflow-init:
-    build: .
-    depends_on:
-      postgres:
-        condition: service_healthy
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__LOAD_EXAMPLES=false
-      - AIRFLOW__CORE__FERNET_KEY=''
-      - AIRFLOW__WEBSERVER__SECRET_KEY='this-is-a-test-key'
-      - _AIRFLOW_DB_MIGRATE=true
-      - _AIRFLOW_WWW_USER_CREATE=true
-      - _AIRFLOW_WWW_USER_USERNAME=admin
-      - _AIRFLOW_WWW_USER_PASSWORD=admin
-    command: version
-
   airflow-webserver:
     build: .
-    depends_on:
-      airflow-init:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__LOAD_EXAMPLES=false
-      - AIRFLOW__CORE__FERNET_KEY=''
-      - AIRFLOW__WEBSERVER__SECRET_KEY='this-is-a-test-key'
-    volumes:
-      - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - ./dbt_project:/opt/airflow/dbt_project
+    command: airflow standalone
     ports:
       - "8080:8080"
-    command: webserver
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-
-  airflow-scheduler:
-    build: .
-    depends_on:
-      airflow-init:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-    environment:
-      - AIRFLOW__DATABASE__SQL_ALCHEMY_CONN=postgresql+psycopg2://airflow:airflow@postgres/airflow
-      - AIRFLOW__CORE__LOAD_EXAMPLES=false
-      - AIRFLOW__CORE__FERNET_KEY=''
-      - AIRFLOW__WEBSERVER__SECRET_KEY='this-is-a-test-key'
     volumes:
       - ./dags:/opt/airflow/dags
-      - ./logs:/opt/airflow/logs
-      - ./plugins:/opt/airflow/plugins
-      - ./dbt_project:/opt/airflow/dbt_project
-    command: scheduler
+      - ./data:/opt/airflow/data
+      - ./clean_the_data:/opt/airflow/clean_the_data
+      - airflow-db-volume:/opt/airflow
+    environment:
+      - AIRFLOW__CORE__EXECUTOR=LocalExecutor
+      - AIRFLOW__CORE__SQL_ALCHEMY_CONN=sqlite:////opt/airflow/airflow.db
+      - AIRFLOW__CORE__LOAD_EXAMPLES=False
 
+# Define the named volume
 volumes:
-  postgres-db-volume: 
+  airflow-db-volume:
+
+# Remove the airflow-scheduler service block below this line 
